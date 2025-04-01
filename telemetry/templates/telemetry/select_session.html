@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Select F1 Session</title>
+</head>
+<body>
+    <h1>Select F1 Session</h1>
+
+    {% if error %}
+        <p style="color: red;">Error: {{ error }}</p>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %} <!-- Important for security -->
+        <div>
+            <label for="year">Year:</label>
+            <input type="number" id="year" name="year" required value="2023">
+            <!-- Example: Default to 2023 -->
+        </div>
+        <div>
+            <label for="gp">Grand Prix (Name or Number):</label>
+            <input type="text" id="gp" name="gp" required value="Bahrain">
+            <!-- Example: Default to Bahrain -->
+        </div>
+        <div>
+            <label for="session_type">Session Type:</label>
+            <select id="session_type" name="session_type" required>
+                <option value="FP1">Practice 1 (FP1)</option>
+                <option value="FP2">Practice 2 (FP2)</option>
+                <option value="FP3">Practice 3 (FP3)</option>
+                <option value="Q">Qualifying (Q)</option>
+                <option value="S">Sprint Shootout (S)</option> <!-- If applicable -->
+                <option value="SQ">Sprint (SQ)</option> <!-- If applicable -->
+                <option value="R" selected>Race (R)</option>
+            </select>
+        </div>
+        <br>
+        <button type="submit">Load Session Data</button>
+    </form>
+</body>
+</html>

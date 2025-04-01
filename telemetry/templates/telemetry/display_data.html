@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PitWall: {{ year }} {{ gp }} {{ session_type }}</title>
+    <style>
+        /* Basic styling for the table */
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>
+        PitWall: {{ year }} {{ gp }} ({{ session_type }})
+    </h1>
+
+    {% if error %}
+        <p style="color: red;">Error loading data: {{ error }}</p>
+    {% else %}
+        {% if session_info %}
+            <h2>Session Details</h2>
+            <p><strong>Event:</strong> {{ session_info.event_name }}</p>
+            <p><strong>Location:</strong> {{ session_info.location }}</p>
+            <p><strong>Date:</strong> {{ session_info.date }}</p>
+            <p><strong>Session:</strong> {{ session_info.name }}</p>
+        {% endif %}
+
+        <hr>
+
+        <h2>Race Results</h2>
+        {% if race_results %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Pos</th>
+                        <th>Driver</th>
+                        <th>Team</th>
+                        <th>Grid</th>
+                        <th>Status</th>
+                        <th>Time/Gap</th>
+                        <th>Points</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in race_results %}
+                    <tr>
+                        <td>{{ result.Position | floatformat:0 }}</td> {# Display position as integer #}
+                        <td>{{ result.Abbreviation }}</td>
+                        <td>{{ result.TeamName }}</td>
+                        <td>{{ result.GridPosition | floatformat:0 }}</td> {# Display grid as integer #}
+                        <td>{{ result.Status }}</td>
+                        <td>
+                            {# Display formatted time or status if no time #}
+                            {% if result.TimeString %}
+                                {{ result.TimeString }}
+                            {% elif result.Status != 'Finished' %}
+                                {{ result.Status }}
+                            {% else %}
+                                N/A {# Fallback #}
+                            {% endif %}
+                        </td>
+                        <td>{{ result.Points | floatformat:0 }}</td> {# Display points as integer #}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% elif session_type != 'R' and session_type != 'SQ' %}
+             <p>Results table is typically shown for Race (R) or Sprint (SQ) sessions.</p>
+        {% else %}
+            <p>No results data could be loaded for this session.</p>
+        {% endif %}
+
+        <hr>
+        <p>
+            <a href="{% url 'select_session' %}">Select another session</a>
+        </p>
+
+    {% endif %}
+
+</body>
+</html>
